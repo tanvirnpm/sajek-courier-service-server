@@ -2,6 +2,7 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const cors = require("cors");
+const ObjectId = require('mongodb').ObjectId; 
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -37,8 +38,9 @@ async function run() {
     // get single service details
     app.post("/serviceDetails", async (req, res) => {
       const receivedServiceId = req.body;
-      serviceCollection.find({_id: receivedServiceId}).toArray((err, documents) => {
-        res.send(documents);
+      const objectServiceId = new ObjectId(receivedServiceId.serviceId)
+      serviceCollection.find({_id: objectServiceId}).toArray((err, documents) => {
+        res.send(documents[0].data);
       });
     });
   } finally {
