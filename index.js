@@ -63,18 +63,21 @@ async function run() {
         // make an order with service details and user information
         app.post('/makeAnOrder', async(req, res) => {
             const receivedOrderInformation = req.body;
-            const result = await orderCollection.insertOne(receivedOrderInformation);
-            res.json(result)
+            const result = await orderCollection.insertOne(receivedOrderInformation, (err, documents)=>{
+                res.send(documents)
+            });
+            // res.send(receivedOrderInformation)
         })
 
         // delete orders by order id
         app.post("/deleteOrderByOrderId", async(req, res) => {
             const receivedOrderId = req.body;
             const objectOrderId = new ObjectId(receivedOrderId.o_id)
-            orderCollection.deleteOne({ _id: objectOrderId }).toArray((err, documents) => {
-                res.send(documents[0].data);
+            orderCollection.deleteOne({ _id: objectOrderId },(err, documents) => {
+                // res.send(documents[0].data);
+                res.send(documents); 
             });
-            res.send(receivedOrderId)
+            // res.send(objectOrderId)
         });
 
 
@@ -87,7 +90,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-    res.send("Ema jon server is running");
+    res.send("Server is running");
 });
 
 app.listen(port, () => {
