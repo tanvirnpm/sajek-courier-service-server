@@ -81,9 +81,20 @@ async function run() {
         });
 
         // order active now
-        app.patch('/orderActive/:id', (req,res)=>{
+        app.put('/orderActive/:id', async (req,res)=>{
+            // console.log(req)
             const id = req.params.id;
-            res.send(id)
+            const updateData = req.body;
+            const filter = {_id: ObjectId(id)};
+            const options = { upsert: true}
+            const updateDoc = {
+                $set: {
+                    status: updateData.status
+                }
+            }
+            // console.log(id)
+            const result = await orderCollection.updateOne(filter, updateDoc, options)
+            res.send(result)
         })
 
 
